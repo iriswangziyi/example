@@ -1,7 +1,6 @@
 ---
 title: "Homework 1"
 author: "Iris (Ziyi) Wang"
-date: "9/19/2020"
 output: github_document
 ---
 
@@ -16,18 +15,71 @@ Create a data frame comprised of:
 - a character vector of length 10
 - a factor vector of length 10, with 3 different factor “levels”
 
-```{r}
+```{r create_df}
 prob1_df =
     tibble(
         samp = rnorm(10),
-        samp_grt_0 = samp > 0,
+        samp_gt_0 = samp > 0,
         char_vec = c("a", "b", "c", "d", "e", "f", "g", "h", "i", "j"),
         factor_vec = c("low", "low", "low", "mod", "mod", "mod","mod", "high", "high", "high")
     )
-plot_df = tibble(
-  x = rnorm(1000, sd = .5),
-  y = 1 + 2 * x + rnorm(1000)
-)
 ```
 
-##Problem 2
+Take the mean of each variable in my data frame.
+
+```{r mean_pull_var}
+mean(pull(prob1_df, samp))
+mean(pull(prob1_df, samp_gt_0))
+mean(pull(prob1_df, char_vec))
+mean(pull(prob1_df, factor_vec))
+```
+
+I can take the mean of numbers and logical but not character or factor. 
+
+```{r try_numeric}
+as.numeric(pull(prob1_df, samp))
+as.numeric(pull(prob1_df, samp_gt_0))
+as.numeric(pull(prob1_df, char_vec))
+as.numeric(pull(prob1_df, factor_vec))
+```
+I can convert logical variable to numeric variable, but I cannot convert character and factor variables to numeric variables. So this does explain the reason why I get the error messages when I was trying to take the mean of character and factor variables while it is fine to take the mean of my numeric and logical variables.
+
+```{r}
+# convert the logical vector to numeric, and multiply the random sample by the result
+as.numeric(pull(prob1_df, samp_gt_0)) * pull(prob1_df, samp)
+
+# convert the logical vector to a factor, and multiply the random sample by the result
+as.factor(pull(prob1_df, samp_gt_0)) * pull(prob1_df, samp)
+
+# convert the logical vector to a factor and then convert the result to numeric, and multiply the random sample by the result
+as.numeric(as.factor(pull(prob1_df, samp_gt_0))) * pull(prob1_df, samp)
+```
+
+## Problem 2
+```{r}
+#install.packages("palmerpenguins")
+data("penguins", package = "palmerpenguins")
+```
+
+- Write a short description of the penguins dataset using inline R code, including:
+1. the data in this dataset, including names / values of important variables
+```{r}
+summary(penguins)
+```
+
+2. the size of the dataset is  `r nrow(penguins)` (rows) by `r ncol(penguins)` (columns).
+
+3. the mean flipper length is `r mean(pull(penguins, flipper_length_mm), na.rm=T)`mm.
+
+- Make a scatterplot of flipper_length_mm (y) vs bill_length_mm (x); color points using the species variable (adding color = ... inside of aes in your ggplot code should help).
+```{r}
+ggplot(penguins, 
+       aes(x = bill_length_mm, 
+           y = flipper_length_mm, 
+           color = species)) + geom_point() + ggtitle("Scatterplot")
+```
+
+- Export your first scatterplot to your project directory using ggsave.
+```{r}
+ggsave("plot.pdf", height = 5, width = 5)
+```
