@@ -81,5 +81,5 @@ ggplot(penguins,
 
 - Export your first scatterplot to your project directory using ggsave.
 ```{r}
-ggsave("plot.pdf", height = 5, width = 5)
+ggsave("Scatterplot.pdf", height = 5, width = 5)
 ```
